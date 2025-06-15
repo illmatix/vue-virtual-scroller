@@ -19,123 +19,79 @@ yarn add vue-virtual-scroller
 
 Then in your Vue 3 component:
 
-```typescript
+```vue
 <template>
+  <div
+          ref="scroller"
+          class="scroller"
+          @scroll.passive="onScroll"
+  >
+    <!-- top spacer -->
+    <div :style="{ height: paddingTop + 'px' }" />
+
+    <!-- only the visible items -->
     <div
-        ref = "scroller"
-
-class
-
-= "scroller"
-@scroll.passive
-= "onScroll"
+            v-for="item in visibleItems"
+            :key="item.id"
+            class="item"
     >
-    <!--top
-spacer-- >
-<div
-:
-style = "{ height: paddingTop + 'px' }" / >
-
-    <!--only
-the
-visible
-items-- >
-<div
-    v -
-for= "item in visibleItems"
-    :
-key = "item.id"
-
-class
-
-= "item"
-    >
-    {
-{
-    item.label
-}
-}
-</div>
-
-<!-- bottom spacer -->
-< div
-:
-style = "{ height: paddingBottom + 'px' }" / >
+      {{ item.label }}
     </div>
-    < /template>
 
-    < script
-setup
-lang = "ts" >
-import {ref} from 'vue'
-import {useVirtualScroller} from 'vue-virtual-scroller'
+    <!-- bottom spacer -->
+    <div :style="{ height: paddingBottom + 'px' }" />
+  </div>
+</template>
 
-// 1. Your full data array:
-const items = Array.from({length: 10000}, (_, i) => ({
+<script setup lang="ts">
+  import { ref } from 'vue'
+  import { useVirtualScroller } from 'vue-virtual-scroller'
+
+  // 1. Your full data array:
+  const items = Array.from({ length: 10000 }, (_, i) => ({
     id: i,
     label: `Item #${i}`,
-}))
+  }))
 
-// 2. A ref to the scrolling container:
-const scroller = ref<HTMLElement | null>(null)
+  // 2. A ref to the scrolling container:
+  const scroller = ref<HTMLElement | null>(null)
 
-// 3. Activate the scroller:
-const {
+  // 3. Activate the scroller:
+  const {
     visibleItems,
     paddingTop,
     paddingBottom,
     scrollToIndex,
-} = useVirtualScroller({
+  } = useVirtualScroller({
     items,
     containerRef: scroller,
     itemHeight: 30,    // each .item is 30px tall
     overscan: 5,       // render 5 extra items above & below
-})
+  })
 
-// (Optional) expose a method to jump to a particular item:
-function onScroll() {
+  // (Optional) expose a method to jump to a particular item:
+  function onScroll() {
     // you can also react to scroll events here
-}
+  }
 
-// e.g. somewhere in your code:
-// scrollToIndex(500)  // jump so item #500 is at the top
+  // e.g. somewhere in your code:
+  // scrollToIndex(500)  // jump so item #500 is at the top
 </script>
 
-< style
-scoped >
-.
-scroller
-{
-    height: 400
-    px;
-    overflow - y
-:
-    auto;
-    border: 1
-    px
-    solid
-    #ddd;
-}
+<style scoped>
+  .scroller {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+  }
 
-.
-item
-{
-    height: 30
-    px;
+  .item {
+    height: 30px;
     display: flex;
-    align - items
-:
-    center;
-    padding: 0
-    8
-    px;
-    border - bottom
-:
-    1
-    px
-    solid
-    #f0f0f0;
-}
+    align-items: center;
+    padding: 0 8px;
+    border-bottom: 1px solid #f0f0f0;
+  }
 </style>
 
 ```
@@ -150,56 +106,38 @@ That’s it—drop the `<div ref="scroller">` into your app anywhere you need hi
 
 ## API signature and options
 
-```javascript
-import {Ref, ComputedRef} from 'vue'
+```typescript
+import { Ref, ComputedRef } from 'vue'
 
-export
-interface
-UseVirtualScrollerOptions < T > {
-    /** The full array of items to virtualize */
-    items: T[]
-    /** A `ref` to your scrolling container element (overflow-auto/scroll) */
-    containerRef: Ref < HTMLElement | null >
-        /** Fixed height of a single item (in pixels) */
-        itemHeight
-:
-number
-/**
- * Number of extra items to render above and below the viewport
- * @default 2
- */
-overscan ? : number
+export interface UseVirtualScrollerOptions<T> {
+  /** The full array of items to virtualize */
+  items: T[]
+  /** A `ref` to your scrolling container element (overflow-auto/scroll) */
+  containerRef: Ref<HTMLElement | null>
+  /** Fixed height of a single item (in pixels) */
+  itemHeight: number
+  /**
+   * Number of extra items to render above and below the viewport
+   * @default 2
+   */
+  overscan?: number
 }
 
-export
-interface
-UseVirtualScrollerReturn < T > {
-    /** The subset of `items` you should actually render */
-    visibleItems: ComputedRef < T[] >
-        /** Top spacer height in pixels */
-        paddingTop
-:
-ComputedRef < number >
-/** Bottom spacer height in pixels */
-paddingBottom
-:
-ComputedRef < number >
-/** Index of the first rendered item */
-startIndex
-:
-ComputedRef < number >
-/** One past the index of the last rendered item */
-endIndex
-:
-ComputedRef < number >
-/** How many items fit in the container at once */
-visibleCount
-:
-ComputedRef < number >
-/** Scroll the container so that `index` lands at the top */
-scrollToIndex
-:
-(index: number) => void
+export interface UseVirtualScrollerReturn<T> {
+  /** The subset of `items` you should actually render */
+  visibleItems: ComputedRef<T[]>
+  /** Top spacer height in pixels */
+  paddingTop: ComputedRef<number>
+  /** Bottom spacer height in pixels */
+  paddingBottom: ComputedRef<number>
+  /** Index of the first rendered item */
+  startIndex: ComputedRef<number>
+  /** One past the index of the last rendered item */
+  endIndex: ComputedRef<number>
+  /** How many items fit in the container at once */
+  visibleCount: ComputedRef<number>
+  /** Scroll the container so that `index` lands at the top */
+  scrollToIndex: (index: number) => void
 }
 
 /**
@@ -209,9 +147,8 @@ scrollToIndex
  * @returns an object with reactive fields and helpers
  */
 export function useVirtualScroller<T>(
-    options: UseVirtualScrollerOptions<T>
+        options: UseVirtualScrollerOptions<T>
 ): UseVirtualScrollerReturn<T>
-
 ```
 
 ### Options
