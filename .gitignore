@@ -1,0 +1,50 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Rollup cache (if you ever enable it)
+.rollup.cache/
+
+# Yarn error logs
+yarn-error.log
+
+# VSCode settings
+.vscode/
+
+# IDE config
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.*.local
+
+# Test coverage
+coverage/
+*.lcov
+
+# Playground/demo artifacts
+/playground/node_modules/
+/playground/dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Mac/Linux trash
+.Trash-*/
+
+# Optional: lockfiles if you prefer to not commit them
+# package-lock.json
+# yarn.lock
